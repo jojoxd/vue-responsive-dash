@@ -1,10 +1,10 @@
-import DashItem from "./DashItem.vue";
-import DashLayout from "./DashLayout.vue";
+import DashboardItem from "./DashboardItem.vue";
+import DashboardLayout from "./DashboardLayout.vue";
 import Dashboard from "./Dashboard.vue";
 
 const VueResponsiveDash = {
-  DashItem,
-  DashLayout,
+  DashboardItem,
+  DashboardLayout,
   Dashboard,
 };
 
@@ -34,4 +34,4 @@ if (GlobalVue) {
 }
 
 export default VueResponsiveDash;
-export { DashItem, DashLayout, Dashboard };
+export { DashboardItem, DashboardLayout, Dashboard };

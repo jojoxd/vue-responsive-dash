@@ -1,4 +1,6 @@
 {
+  "extends": "@jojoxd/tsconfig/config/frontend",
+
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
@@ -10,17 +12,24 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "baseUrl": ".",
-    "types": [
-      "webpack-env",
-      "jest"
+//    "types": [
+//      "webpack-env",
+//      "jest",
+//      "vue",
+//      "vue-demi",
+//      "@interactjs/actions",
+//      "@interactjs/core"
+//    ],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/@interactjs",
+      "./node_modules/vue-demi",
+      "./node_modules/vue"
     ],
-    "paths": {
-      "@/*": [
-        "src/*"
-      ]
-    },
     "lib": [
       "esnext",
+      "es5",
+      "es6",
       "dom",
       "dom.iterable",
       "scripthost"

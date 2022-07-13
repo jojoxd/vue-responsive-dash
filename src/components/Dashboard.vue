@@ -1,75 +1,67 @@
 <template>
-  <div :id="id" :ref="id" v-if="d" v-rlocal @resize="onResize">
+  <div :id="id" :ref="id" v-if="d" v-resize-detector @resize="onResize">
     <slot></slot>
   </div>
 </template>
 
-<script>
-import { Dashboard } from "./Dashboard.model";
-import { resize } from "vue-element-resize-detector";
+<script setup lang="ts">
+  import { resize as vResizeDetector } from "vue-element-resize-detector";
+  import { provide, computed, watch, defineProps, onMounted, ref } from "vue-demi";
+  import {Dashboard} from "../model/Dashboard";
+  import {LayoutDefaults} from "../model/defaults";
 
-//Monitor the Props and update the item with the changed value
-const watchProp = (key, deep) => ({
-  handler(newValue) {
-    //If the prop did not cause the update there is no updating
-    if (this.d[key] === newValue) {
-      return;
+  const props = defineProps({
+    id: {
+      type: Object as PropType<number | string>,
+      required: true
+    },
+
+    autoHeight: {
+      type: Boolean,
+      default: LayoutDefaults.autoHeight
+    },
+  });
+
+  const emit = defineEmits([
+      'currentBreakpointUpdated'
+  ]);
+
+  const d = ref(null);
+
+  onMounted(() => {
+    d.value = new Dashboard(props);
+  });
+
+  provide("$dashboard", d);
+
+  const currentBreakpoint = computed(() => {
+    return d.value?.currentBreakpoint ?? null;
+  });
+
+  watch(currentBreakpoint, (newValue) => {
+    if (newValue) {
+      emit("currentBreakpointUpdated", newValue);
     }
-    this.d[key] = newValue;
-  },
-  deep,
-});
-export default {
-  name: "Dashboard",
-  inheritAttrs: false,
-  props: {
-    id: { type: [Number, String], required: true },
-    autoHeight: { type: Boolean, default: Dashboard.defaults.autoHeight },
-  },
-  directives: {
-    rlocal: resize,
-  },
-  data() {
-    return {
-      d: null,
-    };
-  },
-  provide() {
-    return {
-      $dashboard: () => this.d,
-    };
-  },
-  computed: {
-    currentBreakpoint() {
-      if (this.d) {
-        return this.d.currentBreakpoint;
-      }
-      return null;
-    },
-  },
-  watch: {
-    currentBreakpoint(newValue) {
-      if (newValue) {
-        this.$emit("currentBreakpointUpdated", newValue);
-      }
-    },
-  },
-  methods: {
-    onResize(e) {
-      this.d.width = e.detail.width;
-    },
-    createPropWatchers() {
-      //Setup prop watches to sync with the Dash Item
-      Object.keys(this.$props).forEach((key) => {
-        this.$watch(key, watchProp(key, true));
-      });
-    },
-  },
-  created() {
-    this.d = new Dashboard(this.$props);
-    this.createPropWatchers();
-  },
-};
+  });
+
+  function onResize(e) {
+    if(d.value)
+      d.value.width = e.detail.width;
+  }
+
+  // function createPropWatchers() {
+  //   //Setup prop watches to sync with the Dash Item
+  //   Object.keys(props).forEach((key) => {
+  //     this.$watch(key, watchProp(key, true));
+  //   });
+  // }
+
+</script>
+
+<script lang="ts">
+  export default {
+    name: "Dashboard",
+  }
 </script>
 
 <style></style>

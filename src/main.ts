@@ -1,7 +1,6 @@
-import Vue from "vue";
+import { createApp } from "vue-demi";
 import App from "./App.vue";
-Vue.config.productionTip = false;
 
-new Vue({
-  render: (h) => h(App),
-}).$mount("#app");
+const app = createApp(App);
+
+app.mount('#app');
